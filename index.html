@@ -49,7 +49,7 @@
   <h2>鏡片最小直徑計算器</h2>
   <label>鏡片寬度（mm）<input id="lensWidth" type="number" value="52"></label>
   <label>鼻橋寬度（mm）<input id="bridgeWidth" type="number" value="18"></label>
-  <label>鏡片高度（mm）<input id="lensHeight" type="number" value="36"></label>
+  <label>眼位高度（mm）<input id="lensHeight" type="number" value="36"></label>
   <label>瞳孔距離 PD（mm）<input id="pd" type="number" value="60"></label>
   <label>安全邊緣（mm）<input id="safetyEdge" type="number" value="2"></label>
   <button onclick="calculateMLD()">計算最小鏡片直徑</button>
@@ -70,8 +70,8 @@
       const gc = (lensWidth + bridgeWidth) / 2;
       const decentration = Math.abs((pd / 2) - gc);
       const diagonal = Math.sqrt(lensWidth ** 2 + lensHeight ** 2);
-      const ed = diagonal + safetyEdge;
-      const mld = 2 * decentration + ed;
+      const ed = diagonal * 1.05; // 增加一點安全係數，反映實際磨邊
+      const mld = 2 * decentration + ed + safetyEdge;
 
       document.getElementById('result').innerText = `最小鏡片直徑：${mld.toFixed(2)} mm`;
     }
