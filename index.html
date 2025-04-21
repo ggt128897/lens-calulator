@@ -15,7 +15,7 @@
     h2 {
       color: #333;
     }
-    input, button {
+    input, button, label {
       width: 100%;
       padding: 10px;
       margin: 8px 0;
@@ -43,23 +43,61 @@
       font-size: 0.9em;
       color: #666;
     }
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
-  <h2>鏡片最小直徑計算器</h2>
-  <label>鏡片寬度（mm）<input id="lensWidth" type="number" value="52"></label>
-  <label>鼻橋寬度（mm）<input id="bridgeWidth" type="number" value="18"></label>
-  <label>眼位高度（mm）<input id="lensHeight" type="number" value="36"></label>
-  <label>瞳孔距離 PD（mm）<input id="pd" type="number" value="60"></label>
-  <label>安全邊緣（mm）<input id="safetyEdge" type="number" value="2"></label>
-  <button onclick="calculateMLD()">計算最小鏡片直徑</button>
-  <div id="result"></div>
 
-  <footer>
-    製作人：1019Aaron
-  </footer>
+  <!-- 密碼登入區塊 -->
+  <div id="loginArea">
+    <h2>請輸入密碼以繼續</h2>
+    <input type="password" id="passwordInput" placeholder="請輸入密碼">
+    <button onclick="checkPassword()">登入</button>
+    <div id="loginError" style="color: red;"></div>
+  </div>
+
+  <!-- 主內容區塊 -->
+  <div id="mainContent" class="hidden">
+    <h2>鏡片最小直徑計算器</h2>
+    <label>鏡片寬度（mm）<input id="lensWidth" type="number" value="52"></label>
+    <label>鼻橋寬度（mm）<input id="bridgeWidth" type="number" value="18"></label>
+    <label>眼位高度（mm）<input id="lensHeight" type="number" value="36"></label>
+    <label>瞳孔距離 PD（mm）<input id="pd" type="number" value="60"></label>
+    <label>安全邊緣（mm）<input id="safetyEdge" type="number" value="2"></label>
+
+    <label>
+      <input type="checkbox" id="advancedToggle" onchange="toggleAdvanced()"> 開啟進階模式
+    </label>
+    <div id="advancedOptions" class="hidden">
+      <label>校正因子（預設 1.05）<input id="correctionFactor" type="number" value="1.05" step="0.01"></label>
+    </div>
+
+    <button onclick="calculateMLD()">計算最小鏡片直徑</button>
+    <div id="result"></div>
+
+    <footer>
+      製作人：1019Aaron
+    </footer>
+  </div>
 
   <script>
+    function checkPassword() {
+      const input = document.getElementById('passwordInput').value;
+      if (input === 'Aaron') {
+        document.getElementById('loginArea').classList.add('hidden');
+        document.getElementById('mainContent').classList.remove('hidden');
+      } else {
+        document.getElementById('loginError').innerText = '密碼錯誤，請再試一次';
+      }
+    }
+
+    function toggleAdvanced() {
+      const isChecked = document.getElementById('advancedToggle').checked;
+      document.getElementById('advancedOptions').classList.toggle('hidden', !isChecked);
+    }
+
     function calculateMLD() {
       const lensWidth = parseFloat(document.getElementById('lensWidth').value);
       const bridgeWidth = parseFloat(document.getElementById('bridgeWidth').value);
@@ -67,10 +105,14 @@
       const pd = parseFloat(document.getElementById('pd').value);
       const safetyEdge = parseFloat(document.getElementById('safetyEdge').value) || 2;
 
+      const correctionFactor = document.getElementById('advancedToggle').checked
+        ? parseFloat(document.getElementById('correctionFactor').value)
+        : 1.05;
+
       const gc = (lensWidth + bridgeWidth) / 2;
       const decentration = Math.abs((pd / 2) - gc);
       const diagonal = Math.sqrt(lensWidth ** 2 + lensHeight ** 2);
-      const ed = diagonal * 1.05; // 增加一點安全係數，反映實際磨邊
+      const ed = diagonal * correctionFactor;
       const mld = 2 * decentration + ed + safetyEdge;
 
       document.getElementById('result').innerText = `最小鏡片直徑：${mld.toFixed(2)} mm`;
