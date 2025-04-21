@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>鏡片最小直徑計算器</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; max-width: 400px; margin: auto; background-color: #f2f2f2; }
+    h2 { color: #333; }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      box-sizing: border-box;
+      font-size: 1em;
+    }
+    button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #007BFF;
+    }
+  </style>
+</head>
+<body>
+  <h2>鏡片最小直徑計算器</h2>
+  <label>鏡片寬度（mm）<input id="lensWidth" type="number" value="52"></label>
+  <label>鼻橋寬度（mm）<input id="bridgeWidth" type="number" value="18"></label>
+  <label>鏡片高度（mm）<input id="lensHeight" type="number" value="36"></label>
+  <label>瞳孔距離 PD（mm）<input id="pd" type="number" value="60"></label>
+  <label>安全邊緣（mm）<input id="safetyEdge" type="number" value="2"></label>
+  <button onclick="calculateMLD()">計算最小鏡片直徑</button>
+  <div id="result"></div>
+
+  <script>
+    function calculateMLD() {
+      const lensWidth = parseFloat(document.getElementById('lensWidth').value);
+      const bridgeWidth = parseFloat(document.getElementById('bridgeWidth').value);
+      const lensHeight = parseFloat(document.getElementById('lensHeight').value);
+      const pd = parseFloat(document.getElementById('pd').value);
+      const safetyEdge = parseFloat(document.getElementById('safetyEdge').value) || 2;
+
+      const gc = (lensWidth + bridgeWidth) / 2;
+      const decentration = Math.abs((pd / 2) - gc);
+      const diagonal = Math.sqrt(lensWidth ** 2 + lensHeight ** 2);
+      const ed = diagonal + safetyEdge;
+      const mld = 2 * decentration + ed;
+
+      document.getElementById('result').innerText = `最小鏡片直徑：${mld.toFixed(2)} mm`;
+    }
+  </script>
+</body>
+</html>
