@@ -106,8 +106,8 @@
       const safetyEdge = parseFloat(document.getElementById('safetyEdge').value) || 2;
 
       const correctionFactor = document.getElementById('advancedToggle').checked
-        ? parseFloat(document.getElementById('correctionFactor').value)
-        : 1.05;
+  ? parseFloat(document.getElementById('correctionFactor').value)
+  : 0.95;
 
       const gc = (lensWidth + bridgeWidth) / 2;
       const decentration = Math.abs((pd / 2) - gc);
