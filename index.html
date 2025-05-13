@@ -55,14 +55,7 @@
 </head>
 <body>
 
-<div id="loginArea">
-  <h2>請輸入密碼以繼續</h2>
-  <input type="password" id="passwordInput" placeholder="請輸入密碼">
-  <button onclick="checkPassword()">登入</button>
-  <div id="loginError" style="color: red;"></div>
-</div>
-
-<div id="mainContent" class="hidden">
+<div id="mainContent">
   <h2>鏡片最小直徑計算器</h2>
 
   <label>鏡片寬度（mm）<input id="lensWidth" type="number" value="52"></label>
@@ -87,16 +80,6 @@
 </div>
 
 <script>
-  function checkPassword() {
-    const input = document.getElementById('passwordInput').value;
-    if (input === 'Aaron') {
-      document.getElementById('loginArea').classList.add('hidden');
-      document.getElementById('mainContent').classList.remove('hidden');
-    } else {
-      document.getElementById('loginError').innerText = '密碼錯誤，請再試一次';
-    }
-  }
-
   function toggleAdvanced() {
     const isChecked = document.getElementById('advancedToggle').checked;
     document.getElementById('advancedOptions').classList.toggle('hidden', !isChecked);
@@ -150,7 +133,7 @@
     const imageData = ctx.getImageData(0, 0, width, height);
     const data = imageData.data;
 
-    // 邊緣偵測簡化版（依亮度變化）
+    // 邊緣偵測簡化版
     const threshold = 30;
     const edgePoints = [];
     for (let y = 1; y < height - 1; y++) {
@@ -169,7 +152,6 @@
       return;
     }
 
-    // 計算最大距離（ED）
     let maxDist = 0;
     for (let i = 0; i < edgePoints.length; i++) {
       for (let j = i + 1; j < edgePoints.length; j++) {
@@ -182,14 +164,12 @@
       }
     }
 
-    // 計算鏡片中心與眼位偏心（像素）
     const centerX = width / 2;
     const centerY = height / 2;
     const decX = Math.abs(centerX - eyeX);
     const decY = Math.abs(centerY - eyeY);
     const decPx = Math.sqrt(decX ** 2 + decY ** 2);
 
-    // 使用校正因子與實體尺寸換算
     const lensWidth = parseFloat(document.getElementById('lensWidth').value);
     const bridgeWidth = parseFloat(document.getElementById('bridgeWidth').value);
     const pd = parseFloat(document.getElementById('pd').value);
